@@ -1,10 +1,11 @@
 #include <iostream>
 
+#include "common.hpp"
 #include "color.hpp"
 #include "imageio.hpp"
-#include "ray.hpp"
 #include "timing.hpp"
-#include "vec3.hpp"
+#include "hittable_list.h"
+#include "sphere.h"
 
 /////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -16,16 +17,12 @@ double initial_sphere_radius = 0.5;
 
 /////////////////////////////////////////////
 // RAYTRACING ALGORITHM
-double hit_sphere(const point3& center, double radius, const ray& r) {
-    // TODO --- TASK 2
-    return 0.0;
-    // -----TASK-2----
-}
-
-color ray_color(const ray& r) {
-    // TODO --- TASK 2
-    // change ray color to red (rgb) if it hits initial_sphere
-    // -----TASK-2----
+color ray_color(const ray& r, const hittable& world) {
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec))
+    {
+        return 0.5 * (rec.normal + color(1,1,1));
+    }
     vec3 unit_direction = unit_vector(r.direction());
     auto t = 0.5*(unit_direction.y() + 1.0);
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
@@ -46,11 +43,9 @@ int main() {
     }
 
     // World
-    // TODO --- TASK 3
-    // hittable_list world;
-    // world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
-    // world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
-    // -----TASK-3----
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     // Camera
     auto viewport_height = 2.0;
@@ -70,7 +65,7 @@ int main() {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            image[j*image_width + i] = ray_color(r);
+            image[j*image_width + i] = ray_color(r, world);
         }
     }
     timing(&we,&ce);
