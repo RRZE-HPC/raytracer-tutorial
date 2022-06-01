@@ -85,7 +85,46 @@ You now should see something like this:
 
 ![result 02](/docs/images/res02.png)
 
-# Task 3
+# Task 3 - Normal-colored sphere and ground
+Let us color the sphere according to its normal vectors.
+For this, please change your strictly red coloring (probably like `return color(1, 0, 0);`) to these lines in case of a hit in `main.cpp`:
+```cpp
+// if hit_sphere returns > 0.0:
+vec3 N = unit_vector(r.at(t) - vec3(0,0,-1));
+return 0.5*color(N.x()+1, N.y()+1, N.z()+1);
+// else:
+// vec3 unit_direction = ...
+```
+
+Result:
+
+![result 03](/docs/images/res03.png)
+
+Since there are some serious design decision we have to take, like having an abstraction class for all kind of objects and not just spheres, a differentiation between the front side and the back side of a surface and a direction of the normal depending on the direction of the incoming ray (from the inside vs from the outside), we will refactor our project a bit:
+1. From now on we have a abstract class `hittable` and a class `sphere` that is a hittable object. Look at `hittable.hpp` and `sphere.hpp`.  
+  **Include `sphere.hpp` in your `main.cpp`!**
+2. To handle more than one object, we will have a list of `hittable`s and finally some common constants and functions. Look at `hittable_list.hpp` and `common.hpp`.  
+  **Include both header files in your `main.cpp`!**  
+  Since some of the current `include`s are already covered in the newly added headers, you can remove `ray.hpp` and `vec3.hpp` again.
+3. The function determining if an object was hit is now handled in the corresponding object classes (like `sphere`), therefore, we don't need the `hit_sphere()` function in main anymore.  
+  **Delete `hit_sphere()` in `main.cpp`**
+4. We now can create our objects in a smarter way! Look at the `// World` section for Task 3 in the main function and comment it in.
+5. **Replace the current `ray_color()` function with one including our list of `hittable`s:**  
+    ```cpp
+    color ray_color(const ray& r, const hittable& world) {
+        hit_record rec;
+        if (world.hit(r, 0, infinity, rec))
+        {
+            return 0.5 * (rec.normal + color(1,1,1));
+        }
+        vec3 unit_direction = unit_vector(r.direction());
+        auto t = 0.5*(unit_direction.y() + 1.0);
+        return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+    }
+    ```
+    We still do the same as before and simply replaced the specific calculations for a sphere by the generic `world.hit()`.  
+    **Adjust the `ray_color()` call in the main() function accordingly!**
+
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
 
