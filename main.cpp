@@ -10,8 +10,8 @@
 // GLOBAL VARIABLES
 
 // sphere at -1 of z-axis
-initial_sphere_center = point3(0,0,-1);
-initial_sphere_radius = 0.5;
+point3 initial_sphere_center = point3(0,0,-1);
+double initial_sphere_radius = 0.5;
 
 
 /////////////////////////////////////////////
