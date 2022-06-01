@@ -78,8 +78,10 @@ $$
 This equation system can be solved via the standard solution for quadratic equation of the structure "$ax^2 + bx + c$" and we know the ray hits the sphere if the **discriminant is larger than $0$**.
 
 **Complete the `hit_sphere()` and `ray_color()` functions in `main.cpp` according to the explanation**  
-Note that er is a `dot` helper function in `vec3`. Instead of returning the standard color, return only the color red if the ray hits the sphere. (*Hint: First, calculate $a, b, c$ and then resolve for the discriminant. Remember the discrimant is* $\sqrt{b^2 - 4ac}$)
+Note that er is a `dot()` helper function for `vec3`. Instead of returning the standard color, return only the color red if the ray hits the sphere. (*Hint: First, calculate $a, b, c$ and then resolve for the discriminant. Remember the discrimant is* $\sqrt{b^2 - 4ac}$)
 
+You now should see something like this:
+![result 02](/docs/images/res02.png)
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
 
