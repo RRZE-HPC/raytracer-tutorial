@@ -125,6 +125,10 @@ Since there are some serious design decision we have to take, like having an abs
     We still do the same as before and simply replaced the specific calculations for a sphere by the generic `world.hit()`.  
     **Adjust the `ray_color()` call in the main() function accordingly!**
 
+Your world should now look like this:
+![result 03b](/docs/images/res03b.png)
+
+
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
 
