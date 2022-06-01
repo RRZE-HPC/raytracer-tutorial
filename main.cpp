@@ -16,9 +16,9 @@ double initial_sphere_radius = 0.5;
 
 /////////////////////////////////////////////
 // RAYTRACING ALGORITHM
-bool hit_sphere(const point3& center, double radius, const ray& r) {
+double hit_sphere(const point3& center, double radius, const ray& r) {
     // TODO --- TASK 2
-    return false;
+    return 0.0;
     // -----TASK-2----
 }
 
