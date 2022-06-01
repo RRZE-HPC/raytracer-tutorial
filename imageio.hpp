@@ -4,7 +4,7 @@
 #include "vec3.hpp"
 #include "color.hpp"
 
-inline void write_pnm(size_t w, size_t h, const vec3* img, const char* fname) {
+inline void write_pnm(int w, int h, const vec3* img, const char* fname) {
     FILE* fp;
 
     fp = fopen(fname, "w");
@@ -12,10 +12,12 @@ inline void write_pnm(size_t w, size_t h, const vec3* img, const char* fname) {
 		fprintf(stderr,"Could not open output file!\n");
 		exit(1);
 	}
-    fprintf(fp, "P3\n%d %d\n%d\n", (int)w, (int)h, 255);
+    fprintf(fp, "P3\n%d %d\n%d\n", w, h, 255);
 
-    for (size_t i = 0; i < w * h; ++i) {
-		write_color_to_file(fp, img[i]);
+    for (int j=h-1; j>=0; j--) {
+        for (int i=0; i<w; ++i) {
+    		write_color_to_file(fp, img[j*w+i]);
+        }
     }
 
     fclose(fp);

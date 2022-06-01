@@ -60,14 +60,14 @@ int main() {
     // Render
     double ws,we,cs,ce;
     timing(&ws,&cs);
-    for (int j = 0; j < image_height; ++j)
+    for (int j=0; j<image_height; ++j)
     {
-        for (int i = 0; i < image_width; ++i)
+        for (int i=0; i<image_width; ++i)
         {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical - origin);
-            image[j*image_width + i] = ray_color(r, world);
+            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
+            image[j*image_width + i] = ray_color(r);
         }
     }
     timing(&we,&ce);
