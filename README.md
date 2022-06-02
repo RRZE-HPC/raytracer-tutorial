@@ -50,6 +50,7 @@ Look at
 - `vec3.hpp`
 - `color.hpp`
 - `ray.hpp`
+- `camera.hpp`
 - `main.cpp`
 
 The camera geometry looks as the following:
@@ -72,9 +73,9 @@ A point $\mathbf{P}=(x,y,z)$ is inside a sphere with center $\mathbf{C}=(C_x,C_y
 $$ (\mathbf{P}-\mathbf{C}) \cdot (\mathbf{P}-\mathbf{C}) = r^2 $$
 With a ray being a function of points $\mathbf{P}(t) = \mathbf{A} + t\mathbf{b}$ with the the origin $A$ and the direction $b$, there are some $t$ for with $\mathbf{P}(t)$ satisfies this equation.  
 Expanding the equation to the full form and move everything to the left hand side we get:
-$$ 
-t^2\mathbf{b} \cdot \mathbf{b} + 2t\mathbf{b} \cdot (\mathbf{A} - \mathbf{C}) + (\mathbf{A} - \mathbf{C}) \cdot (\mathbf{A} - \mathbf{C}) - r^2 = 0
-$$
+
+$$ t^2\mathbf{b} \cdot \mathbf{b} + 2t\mathbf{b} \cdot (\mathbf{A} - \mathbf{C}) + (\mathbf{A} - \mathbf{C}) \cdot (\mathbf{A} - \mathbf{C}) - r^2 = 0 $$
+
 This equation system can be solved via the standard solution for quadratic equation of the structure "$ax^2 + bx + c$" and we know the ray hits the sphere if the **discriminant is larger than $0$**.
 
 **Complete the `hit_sphere()` and `ray_color()` functions in `main.cpp` according to the explanation**  
@@ -126,7 +127,17 @@ Since there are some serious design decision we have to take, like having an abs
     **Adjust the `ray_color()` call in the main() function accordingly!**
 
 Your world should now look like this:
+
 ![result 03b](/docs/images/res03b.png)
+
+
+# Task 4 - Antialiasing
+So far we always rendered one sample per pixel. For smoother edges and object boundaries, it is helpful to increase this number! This is called **antialiasing**.
+For this, **add the `samples_per_pixel` variable in the image section**.
+In our main rendering loop, we now want to create a new loop iterating over the number of samples per pixel.
+To vary the position of our rays inside a pixel, we add a random number in the range of 0 to 1 (check out `common.hpp`) to our `i` and `j` coordinate.
+Instead of writing our color directly in the image, we first accumulate all of our ray colors into a pixel color, that is initially **black** for each pixel.
+Finally, we change 
 
 
 -------------------------------

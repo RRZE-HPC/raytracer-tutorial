@@ -66,7 +66,7 @@ int main() {
     {
         for (int i=0; i<image_width; ++i)
         {
-            // TODO TASK 4
+            // TODO TASK 4: add the samples per pixel loop
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
             ray r = cam.get_ray(u, v);
