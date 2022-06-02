@@ -35,11 +35,9 @@ color ray_color(const ray& r, const hittable& world) {
 int main() {
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
+    const int image_width = 1000;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    // TODO --- TASK 4
-    // const int samples_per_pixel = 100;
-    // -----TASK-4----
+    const int samples_per_pixel = 100;
     color* image;
     if((image=(vec3*)malloc(image_width * image_height * sizeof(vec3)))==NULL) {
         fprintf(stderr,"Could not allocate picture memory!\n");
@@ -61,11 +59,15 @@ int main() {
     {
         for (int i=0; i<image_width; ++i)
         {
-            // TODO TASK 4: add the samples per pixel loop
-            auto u = double(i) / (image_width-1);
-            auto v = double(j) / (image_height-1);
-            ray r = cam.get_ray(u, v);
-            image[j*image_width + i] = ray_color(r);
+            color pixel_color(0, 0, 0);
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto u = double(random_double() + i) / (image_width-1);
+                auto v = double(random_double() + j) / (image_height-1);
+                ray r = cam.get_ray(u, v);
+                pixel_color += ray_color(r, world);
+            }
+            image[j*image_width + i] = (pixel_color / samples_per_pixel);
         }
     }
     timing(&we,&ce);
