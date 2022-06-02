@@ -157,9 +157,9 @@ Just like in theory, we now *recursively* start another `ray_color` simulation, 
 
 To not end up in a endless loop, we need some kind of break condition. This will be out `max_depth` variable (commented in Image section). Add it as parameter in your `ray_color()` function, decrease it by one every time you recursively call the function and implement a break condition if we reached the max depth. In this case we just return **black**.
 
-Now, the image looks like this:
+Now, the image looks like this (and take much longer to render):
 
-![result 05](/docs/images/)
+![result 05](/docs/images/res05.png)
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
