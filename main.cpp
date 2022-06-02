@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include "timing.hpp"
 #include "common.hpp"
@@ -43,20 +44,42 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 }
 
 
+void calc_tile(int image_width, int image_height, int xstart, int ystart, int tilesize, int samples_per_pixel, color* tile, camera cam, hittable_list world, int max_depth) {
+    int i = 0;
+    for (int y = ystart; y < ystart+tilesize; y++)
+    {
+        for (int x = xstart; x < xstart+tilesize; x++)
+        {
+            color pixel_color(0, 0, 0);
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto u = double(random_double() + x) / (image_width-1);
+                auto v = double(random_double() + y) / (image_height-1);
+                ray r = cam.get_ray(u, v);
+                pixel_color += ray_color(r, world, max_depth);
+            }
+            tile[i++] = pixel_color / samples_per_pixel;
+        }
+    }
+}
+
+
 /////////////////////////////////////////////
 // MAIN
 int main() {
     // Image
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 1000;
+    const auto aspect_ratio = 1; //16.0 / 9.0;
+    const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 100;
+    const int samples_per_pixel = 10;
     const int max_depth = 50;
+    const int tilesize = 100;
     color* image;
     if((image=(vec3*)malloc(image_width * image_height * sizeof(vec3)))==NULL) {
         fprintf(stderr,"Could not allocate picture memory!\n");
         exit(1);
     }
+    color* tile;
 
     // World
     hittable_list world;
@@ -76,21 +99,54 @@ int main() {
     // Render
     double ws,we,cs,ce;
     timing(&ws,&cs);
-    for (int j=0; j<image_height; ++j)
+
+    // number of tiles in x and y direction
+    int xtiles = image_width / tilesize;
+    int ytiles = image_height / tilesize;
+
+    #pragma omp parallel private(tile, world, cam)
     {
-        for (int i=0; i<image_width; ++i)
-        {
-            color pixel_color(0, 0, 0);
-            for (int s = 0; s < samples_per_pixel; ++s)
-            {
-                auto u = double(random_double() + i) / (image_width-1);
-                auto v = double(random_double() + j) / (image_height-1);
-                ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, max_depth);
-            }
-            image[j*image_width + i] = (pixel_color / samples_per_pixel);
+        if((tile=(vec3*)malloc(tilesize*tilesize*sizeof(vec3)))==NULL) {
+            fprintf(stderr,"Could not allocate tile memory!\n");
+            exit(1);
         }
+
+        #pragma omp for schedule(dynamic) collapse(2)
+        for(int yc=0; yc<xtiles; yc++)
+        {
+            for(int xc=0; xc<ytiles; xc++)
+            {
+                // calc one tile
+                calc_tile(image_width, image_height, xc*tilesize, yc*tilesize, tilesize, samples_per_pixel, tile, cam, world, max_depth);
+                // copy to picture buffer
+                for(int i=0; i<tilesize; i++)
+                {
+                    int tilebase = yc*tilesize*tilesize*xtiles+xc*tilesize;
+                    memcpy((void*)(image+tilebase+i*tilesize*xtiles),
+                           (void*)(tile+i*tilesize),
+                           tilesize*sizeof(color));
+                }
+            }
+        }
+        free(tile);
     }
+
+    //#pragma omp parallel for schedule(dynamic) collapse(2) firstprivate(world, cam)
+    //for (int j=0; j<image_height; ++j)
+    //{
+    //    for (int i=0; i<image_width; ++i)
+    //    {
+    //        color pixel_color(0, 0, 0);
+    //        for (int s = 0; s < samples_per_pixel; ++s)
+    //        {
+    //            auto u = double(random_double() + i) / (image_width-1);
+    //            auto v = double(random_double() + j) / (image_height-1);
+    //            ray r = cam.get_ray(u, v);
+    //            pixel_color += ray_color(r, world, max_depth);
+    //        }
+    //        image[j*image_width + i] = (pixel_color / samples_per_pixel);
+    //    }
+    //}
     timing(&we,&ce);
     fprintf(stderr,"Time: %lf s, Performance: %lf MPixels/s\n",we-ws,(double)image_height*image_width/(we-ws)/1e6);
 
