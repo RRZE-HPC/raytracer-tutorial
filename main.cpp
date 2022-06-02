@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include "common.hpp"
-#include "camera.hpp"
-#include "color.hpp"
-#include "imageio.hpp"
 #include "timing.hpp"
-#include "hittable_list.hpp"
-#include "sphere.hpp"
+#include "common.hpp"
+#include "vec3.hpp"
+#include "color.hpp"
+#include "ray.hpp"
+#include "camera.hpp"
+#include "imageio.hpp"
 
 /////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -38,6 +38,9 @@ int main() {
     const int image_width = 1000;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 100;
+    // TODO --- TASK 5
+    // const int max_depth = 50;
+    // -----TASK-5----
     color* image;
     if((image=(vec3*)malloc(image_width * image_height * sizeof(vec3)))==NULL) {
         fprintf(stderr,"Could not allocate picture memory!\n");
