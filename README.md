@@ -80,7 +80,7 @@ This equation system can be solved via the standard solution for quadratic equat
 
 **Complete the `hit_sphere()` and `ray_color()` functions in `main.cpp` according to the explanation**  
 To be ready for further tasks, let's return `-1.0` if the discriminant is lower than `0` (i.e., misses the sphere) and $x$ otherwise.  
-Note that there is a `dot()` helper function for `vec3`. Instead of returning the standard color, return only the color red if the ray hits the sphere. (*Hint: First, calculate $a, b, c$ and then resolve for the discriminant. Remember the solution for x is* $x = \frac{-b - \sqrt{b^2 - 4ac}}{2a}$)
+Note that there is a `dot()` helper function for `vec3`. Instead of returning the standard color, return only the color red if the ray hits the sphere. (*Hint: First, calculate $a, b, c$ and then resolve for the discriminant. Remember the solution for x is $x = \frac{-b - \sqrt{b^2 - 4ac}}{2a}$, we do not care about the case of adding the root of the discriminant since it would give us the outgoing intersection.*)
 
 You now should see something like this:
 
@@ -134,11 +134,22 @@ Your world should now look like this:
 # Task 4 - Antialiasing
 So far we always rendered one sample per pixel. For smoother edges and object boundaries, it is helpful to increase this number! This is called **antialiasing**.
 For this, **add the `samples_per_pixel` variable in the image section**.
+
 In our main rendering loop, we now want to create a new loop iterating over the number of samples per pixel.
 To vary the position of our rays inside a pixel, we add a random number in the range of 0 to 1 (check out `common.hpp`) to our `i` and `j` coordinate.
 Instead of writing our color directly in the image, we first accumulate all of our ray colors into a pixel color, that is initially **black** for each pixel.
 Finally, to get the average of all colors, we divide our **final** pixel color by the number of samples per pixel.
 Your picture should now show much smoother edges, check it out!
+
+
+# Task 5 - Diffusion: Shiny and fuzzy metal
+We now want to generate a random diffuse bounce ray.
+When a ray is reflected, it bounces randomly within a tangent sphere based on the normal of the intersection at the surface and has a uniform-like distribution with a higher probability of being scattered close to the normal (you can read about the [Lambertian reflection here](https://en.wikipedia.org/wiki/Lambertian_reflectance)).
+Luckily, this is done in the `vec3::random_unit_vector()` function. So far, if a ray hits a surface (`if (world.hit(...)) == true`), we do this:
+```cpp
+return 0.5 * (rec.normal + color(1,1,1));
+```
+
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
