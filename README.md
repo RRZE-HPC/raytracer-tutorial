@@ -142,7 +142,7 @@ Finally, to get the average of all colors, we divide our **final** pixel color b
 Your picture should now show much smoother edges, check it out!
 
 
-# Task 5 - Diffusion: Shiny and fuzzy metal
+# Task 5 - Diffusion
 We now want to generate a random diffuse bounce ray.
 When a ray is reflected, it bounces randomly within a tangent sphere based on the normal of the intersection at the surface and has a uniform-like distribution with a higher probability of being scattered close to the normal (you can read about the [Lambertian reflection here](https://en.wikipedia.org/wiki/Lambertian_reflectance)):
 
@@ -153,13 +153,28 @@ Luckily, the randomization is done in the `vec3::random_unit_vector()` function.
 return 0.5 * (rec.normal + color(1,1,1));
 ```
 In case of a hit, let us first create a point `target` ($S$ in our scratch) which position is the sum of the surface intersection (point of our record, $P$ in the scratch), this point's normal and the random unit vector.
-Just like in theory, we now *recursively* start another `ray_color` simulation, but with our new ray as input (having $P$ as center and the vector $PS$ as direction).
+Just like in theory and multiplied with the same constant attenuation of `0.5`, we now *recursively* start another `ray_color` simulation, but with our new ray as input (having $P$ as center and the vector $PS$ as direction).
 
 To not end up in a endless loop, we need some kind of break condition. This will be out `max_depth` variable (commented in Image section). Add it as parameter in your `ray_color()` function, decrease it by one every time you recursively call the function and implement a break condition if we reached the max depth. In this case we just return **black**.
 
-Now, the image looks like this:
+Now, the image looks like this (and take much longer to render):
 
-![result 05](/docs/images/)
+![result 05](/docs/images/res05.png)
+
+
+# Task 6 - Shiny and fuzzy materials
+After adding diffusion, we introduce different materials.
+Look at the classes in `material.hpp`. All of theses do basically two things:
+- Produce a scattered ray (or say it absorbed the incident ray)
+- If scattered, say how much the ray should be attenuated.
+
+For including the material in our objects, we need to adjust several other classes:
+- a) Add a shared material pointer (`shared_ptr<material> mat_ptr`) in the `hit_record` struct so the ray can interact with the surface. b) Add the a member of the same nature in the `sphere` class. Since a sphere has the same material from the beginning, we need to adjust the (non-empty) constructor: `sphere(point3 cen, double r, shared_ptr<material> m) : center(cen), radius(r), mat_ptr(m) {};`. c) Finally, in the `hit()` function, of a sphere, we assing the sphere's material to the given record.
+- In `main.cpp`, we need to adjust our `ray_color()` function. The reflected ray is now not simply reflected with the same color and strength, but based on the `scatter()` function of the material. Inside our hit-branch, we declare a ray `scattered` and a color `attenuation` and pass those together with the according parameters to the mentioned `scatter()`. This either assigns a value to the newly created variables (and returns `true`) or we simply return *black*. In the former case, we can now use the attenuation instead of the previous constant value (`0.5`) and pass the newly calculated ray (*instead of the now obsolete `target`*) for the recursive call.
+
+We can now remove the World section added in _Task 3_ and instead include the _Task 6_ section, adding four spheres (ground, center, left, right) of different materials to the scene (don't forget to also include the header file):
+
+![result 06](/docs/images/res06.png)
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
