@@ -106,7 +106,6 @@ Since there are some serious design decision we have to take, like having an abs
   **Include `sphere.hpp` in your `main.cpp`!**
 2. To handle more than one object, we will have a list of `hittable`s and finally some common constants and functions. Look at `hittable_list.hpp` and `common.hpp`.  
   **Include both header files in your `main.cpp`!**  
-  Since some of the current `include`s are already covered in the newly added headers, you can remove `ray.hpp` and `vec3.hpp` again.
 3. The function determining if an object was hit is now handled in the corresponding object classes (like `sphere`), therefore, we don't need the `hit_sphere()` function in main anymore.  
   **Delete `hit_sphere()` in `main.cpp`**
 4. We now can create our objects in a smarter way! Look at the `// World` section for Task 3 in the main function and comment it in.
@@ -172,14 +171,18 @@ For including the material in our objects, we need to adjust several other class
 - a) Add a shared material pointer (`shared_ptr<material> mat_ptr`) in the `hit_record` struct so the ray can interact with the surface. b) Add the a member of the same nature in the `sphere` class. Since a sphere has the same material from the beginning, we need to adjust the (non-empty) constructor: `sphere(point3 cen, double r, shared_ptr<material> m) : center(cen), radius(r), mat_ptr(m) {};`. c) Finally, in the `hit()` function, of a sphere, we assing the sphere's material to the given record.
 - In `main.cpp`, we need to adjust our `ray_color()` function. The reflected ray is now not simply reflected with the same color and strength, but based on the `scatter()` function of the material. Inside our hit-branch, we declare a ray `scattered` and a color `attenuation` and pass those together with the according parameters to the mentioned `scatter()`. This either assigns a value to the newly created variables (and returns `true`) or we simply return *black*. In the former case, we can now use the attenuation instead of the previous constant value (`0.5`) and pass the newly calculated ray (*instead of the now obsolete `target`*) for the recursive call.
 
-We can now remove the World section added in _Task 3_ and instead include the _Task 6_ section, adding four spheres (ground, center, left, right) of different materials to the scene (don't forget to also include the header file):
+We can now remove the two spheres added to the world in _Task 3_ and instead include the _Task 6_ section, adding four spheres (ground, center, left, right) of different materials to the scene (don't forget to also include the header file):
 
 ![result 06](/docs/images/res06.png)
+
+# Task 7 - Parallelization
+By now, the rendering already takes a lot of time.
+Let's parallelize it!
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
 
-All code is based on [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html) and [_Ray Tracing: The Next Week_](https://raytracing.github.io/books/RayTracingTheNextWeek.html).
+Most of the code and tasks are based on [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html) and [_Ray Tracing: The Next Week_](https://raytracing.github.io/books/RayTracingTheNextWeek.html).
 
 Authors of this repo are:
 - [Jan Laukemann](mailto:jan.laukemann@fau.de)
