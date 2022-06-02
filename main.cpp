@@ -1,11 +1,12 @@
 #include <iostream>
 
-#include "camera.hpp"
-#include "color.hpp"
-#include "imageio.hpp"
-#include "ray.hpp"
 #include "timing.hpp"
+#include "common.hpp"
 #include "vec3.hpp"
+#include "color.hpp"
+#include "ray.hpp"
+#include "camera.hpp"
+#include "imageio.hpp"
 
 /////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -38,7 +39,7 @@ color ray_color(const ray& r) {
 int main() {
     // Image
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
+    const int image_width = 1000;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     // TODO --- TASK 4
     // const int samples_per_pixel = 100;

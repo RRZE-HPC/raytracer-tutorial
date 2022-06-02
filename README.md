@@ -137,8 +137,8 @@ For this, **add the `samples_per_pixel` variable in the image section**.
 In our main rendering loop, we now want to create a new loop iterating over the number of samples per pixel.
 To vary the position of our rays inside a pixel, we add a random number in the range of 0 to 1 (check out `common.hpp`) to our `i` and `j` coordinate.
 Instead of writing our color directly in the image, we first accumulate all of our ray colors into a pixel color, that is initially **black** for each pixel.
-Finally, we change 
-
+Finally, to get the average of all colors, we divide our **final** pixel color by the number of samples per pixel.
+Your picture should now show much smoother edges, check it out!
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
