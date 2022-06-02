@@ -2,10 +2,6 @@
 
 ### hittable.hpp
 ```cpp
-#include "common.hpp"
-
-class material;
-
 struct hit_record {
     point3 p;
     vec3 normal;
@@ -16,7 +12,7 @@ struct hit_record {
 
 ### sphere.hpp
 ```cpp
-lass sphere : public hittable {
+class sphere : public hittable {
     public:
         sphere() {}
         sphere(point3 cen, double r, shared_ptr<material> m)
@@ -46,6 +42,8 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
 ### main.cpp
 ```cpp
+// ...
+#include "material.hpp"
 // ...
 color ray_color(const ray& r, const hittable& world, int depth)
 {
