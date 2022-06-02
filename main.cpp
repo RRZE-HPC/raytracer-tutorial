@@ -44,6 +44,9 @@ int main() {
     // TODO --- TASK 4
     // const int samples_per_pixel = 100;
     // -----TASK-4----
+    // TODO --- TASK 5
+    // const int max_depth = 50;
+    // -----TASK-5----
     color* image;
     if((image=(vec3*)malloc(image_width * image_height * sizeof(vec3)))==NULL) {
         fprintf(stderr,"Could not allocate picture memory!\n");
