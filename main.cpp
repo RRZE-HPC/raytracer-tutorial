@@ -2,9 +2,7 @@
 
 #include "timing.hpp"
 #include "common.hpp"
-#include "vec3.hpp"
 #include "color.hpp"
-#include "ray.hpp"
 #include "camera.hpp"
 #include "imageio.hpp"
 #include "hittable_list.hpp"
