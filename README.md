@@ -114,7 +114,7 @@ Since there are some serious design decision we have to take, like having an abs
     ```cpp
     color ray_color(const ray& r, const hittable& world) {
         hit_record rec;
-        if (world.hit(r, 0, infinity, rec))
+        if (world.hit(r, 0.001, infinity, rec))
         {
             return 0.5 * (rec.normal + color(1,1,1));
         }
@@ -144,12 +144,22 @@ Your picture should now show much smoother edges, check it out!
 
 # Task 5 - Diffusion: Shiny and fuzzy metal
 We now want to generate a random diffuse bounce ray.
-When a ray is reflected, it bounces randomly within a tangent sphere based on the normal of the intersection at the surface and has a uniform-like distribution with a higher probability of being scattered close to the normal (you can read about the [Lambertian reflection here](https://en.wikipedia.org/wiki/Lambertian_reflectance)).
-Luckily, this is done in the `vec3::random_unit_vector()` function. So far, if a ray hits a surface (`if (world.hit(...)) == true`), we do this:
+When a ray is reflected, it bounces randomly within a tangent sphere based on the normal of the intersection at the surface and has a uniform-like distribution with a higher probability of being scattered close to the normal (you can read about the [Lambertian reflection here](https://en.wikipedia.org/wiki/Lambertian_reflectance)):
+
+![Lambertian reflection](/docs/images/rt-lambertian.png)
+
+Luckily, the randomization is done in the `vec3::random_unit_vector()` function. So far, if a ray hits a surface (`if (world.hit(...)) == true`), we do this:
 ```cpp
 return 0.5 * (rec.normal + color(1,1,1));
 ```
+In case of a hit, let us first create a point `target` ($S$ in our scratch) which position is the sum of the surface intersection (point of our record, $P$ in the scratch), this point's normal and the random unit vector.
+Just like in theory, we now *recursively* start another `ray_color` simulation, but with our new ray as input (having $P$ as center and the vector $PS$ as direction).
 
+To not end up in a endless loop, we need some kind of break condition. This will be out `max_depth` variable (commented in Image section). Add it as parameter in your `ray_color()` function, decrease it by one every time you recursively call the function and implement a break condition if we reached the max depth. In this case we just return **black**.
+
+Now, the image looks like this:
+
+![result 05](/docs/images/)
 
 -------------------------------
 The tutorial images and texts are taken from [_Scratchapixel's Introduction to ray tracing_](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-ray-tracing/) and [Wikipedia](https://de.wikipedia.org/wiki/Raytracing).
