@@ -7,6 +7,8 @@
 #include "ray.hpp"
 #include "camera.hpp"
 #include "imageio.hpp"
+#include "hittable_list.hpp"
+#include "sphere.hpp"
 
 /////////////////////////////////////////////
 // GLOBAL VARIABLES
