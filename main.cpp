@@ -104,7 +104,7 @@ int main() {
     int xtiles = image_width / tilesize;
     int ytiles = image_height / tilesize;
 
-    #pragma omp parallel private(tile, world, cam)
+    #pragma omp parallel private(tile) firstprivate(world, cam)
     {
         if((tile=(vec3*)malloc(tilesize*tilesize*sizeof(vec3)))==NULL) {
             fprintf(stderr,"Could not allocate tile memory!\n");
@@ -131,22 +131,22 @@ int main() {
         free(tile);
     }
 
-    //#pragma omp parallel for schedule(dynamic) collapse(2) firstprivate(world, cam)
-    //for (int j=0; j<image_height; ++j)
-    //{
-    //    for (int i=0; i<image_width; ++i)
-    //    {
-    //        color pixel_color(0, 0, 0);
-    //        for (int s = 0; s < samples_per_pixel; ++s)
-    //        {
-    //            auto u = double(random_double() + i) / (image_width-1);
-    //            auto v = double(random_double() + j) / (image_height-1);
-    //            ray r = cam.get_ray(u, v);
-    //            pixel_color += ray_color(r, world, max_depth);
-    //        }
-    //        image[j*image_width + i] = (pixel_color / samples_per_pixel);
-    //    }
-    //}
+    /*#pragma omp parallel for schedule(dynamic) collapse(2) firstprivate(world, cam)
+    for (int j=0; j<image_height; ++j)
+    {
+        for (int i=0; i<image_width; ++i)
+        {
+            color pixel_color(0, 0, 0);
+            for (int s = 0; s < samples_per_pixel; ++s)
+            {
+                auto u = double(random_double() + i) / (image_width-1);
+                auto v = double(random_double() + j) / (image_height-1);
+                ray r = cam.get_ray(u, v);
+                pixel_color += ray_color(r, world, max_depth);
+            }
+            image[j*image_width + i] = (pixel_color / samples_per_pixel);
+        }
+    }*/
     timing(&we,&ce);
     fprintf(stderr,"Time: %lf s, Performance: %lf MPixels/s\n",we-ws,(double)image_height*image_width/(we-ws)/1e6);
 
